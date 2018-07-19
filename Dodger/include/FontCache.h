@@ -7,14 +7,14 @@
 class FontCache
 {
 	private:
-		SDL_Renderer*& ren;
+		SDL_Renderer* &ren;
 		std::map<int, TTF_Font*> fonts;
 
-		FontCache& operator=(const FontCache&);
+		FontCache &operator=(const FontCache&);
 		FontCache(const FontCache&);
 
 	public:
-		FontCache(SDL_Renderer*& ren);
+		FontCache(SDL_Renderer* &ren);
 		~FontCache();
 
 		void flush();

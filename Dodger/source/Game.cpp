@@ -12,7 +12,7 @@
 #include <algorithm>
 #include <string>
 
-Game::Game(MediaCache& mc, int d) : State(mc),
+Game::Game(MediaCache &mc, int d) : State(mc),
 									font(mediaCache.getFont(60)),
 									player(mediaCache.scrWidth(), mediaCache.scrHeight()),
 									maxEnemySpeed(300), minEnemySpeed(50), minEnemyDim(10), maxEnemyDim(60),
@@ -30,39 +30,13 @@ Game::Game(MediaCache& mc, int d) : State(mc),
 	restartTex->setPosition(mediaCache.centreX(restartTex->w()), mediaCache.scrHeight() - restartTex->h());
 }
 
-const std::string Game::getClockTime()
-{
-	std::stringstream ss;
-	ss << std::fixed << std::setprecision(3) << timer.getSeconds();
-	return ss.str();
-}
-
 Game::~Game()
 {
 }
 
-void Game::setDifficulty()
-{
-	switch (difficulty)
-	{
-		case 1: maxEnemySpeed = 250; 
-				minEnemySpeed = 50;
-				minEnemyDim = 10;
-				maxEnemyDim = 50;
-				break;
-		case 2:
-		default: maxEnemySpeed = 300;
-				minEnemySpeed = 50;
-				minEnemyDim = 10;
-				maxEnemyDim = 60;
-				break;
-		case 3: maxEnemySpeed = 400;
-				minEnemySpeed = 100;
-				minEnemyDim = 20;
-				maxEnemyDim = 80;
-				break;
-	}
-}
+// ===============
+// State functions
+// ===============
 
 void Game::enter(Engine* e)
 {
@@ -74,91 +48,10 @@ void Game::enter(Engine* e)
 	addEnemyTimer.start();
 }
 
-void Game::createEnemy(Engine* e)
-{
-	unsigned int dimension = e->getRandom(minEnemyDim, maxEnemyDim);
-	unsigned int x = e->getRandom(0, mediaCache.scrWidth() - dimension);
-	unsigned int speed = e->getRandom(minEnemySpeed, maxEnemySpeed);
-
-	enemies.push_back(std::make_unique<Enemy>(x, speed, dimension));
-}
-
-void Game::handleEvents(SDL_Event& e, Engine* engine)
+void Game::handleEvents(SDL_Event &e, Engine* engine)
 {
 	keyPressed(e, engine);
 	mouseClicked(e, engine);
-}
-
-void Game::keyPressed(SDL_Event& event, Engine*)
-{
-	if (event.type == SDL_KEYDOWN)
-	{
-		switch (event.key.keysym.sym)
-		{
-			case SDLK_SPACE: 
-				{
-					paused = !paused;
-					if (timer.isPaused())
-					{
-						timer.unpause();
-					}
-					else
-					{
-						timer.pause();
-					}
-				}
-				break;
-			case SDLK_RIGHT:
-				player.setDirection({ 1, 0 });
-				break;
-
-			case SDLK_LEFT:
-				player.setDirection({ -1, 0 });
-				break;
-
-			case SDLK_UP:
-				player.setDirection({ 0, -1 });
-				break;
-
-			case SDLK_DOWN:
-				player.setDirection({ 0, 1 });
-				break;
-
-			default: break;
-		}
-	}
-	else if (event.type == SDL_KEYUP)
-	{
-		switch (event.key.keysym.sym)
-		{
-			case SDLK_LEFT:
-			case SDLK_RIGHT: 
-				player.setDirectionX(0);
-				break;
-
-			case SDLK_UP:
-			case SDLK_DOWN: 
-				player.setDirectionY(0);
-				break;
-
-			default: break;
-		}
-	}
-}
-
-void Game::mouseClicked(SDL_Event&, Engine* engine)
-{
-	int x, y;
-	if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
-	{
-		if (CollisionEngine::checkCollision(restartTex->rect(), x, y))
-		{
-			if (!player.isAlive())
-			{
-				engine->changeState(std::make_shared<Difficulty>(mediaCache));
-			}
-		}
-	}
 }
 
 void Game::update(const double deltaTime, Engine* e)
@@ -170,7 +63,7 @@ void Game::update(const double deltaTime, Engine* e)
 		//for every enemy:
 		//first check it is alive, then move it, then check if it overlaps the player
 		//if it isn't alive, recreate a new enemy in it's place
-		for (auto& enemy : enemies)
+		for (auto &enemy : enemies)
 		{
 			if (enemy->isAlive())
 			{
@@ -203,65 +96,11 @@ void Game::update(const double deltaTime, Engine* e)
 	}
 }
 
-void Game::gameOver()
-{
-	gameOverTex = mediaCache.getText("Game Over", mediaCache.getFont(80), mediaCache.getTextColor());
-	gameOverTex->setPosition(mediaCache.centreX(gameOverTex->w()), mediaCache.centreY(gameOverTex->h()) - gameOverTex->h());
-
-	std::string score = "Score: " +getClockTime();
-
-	scoreTex = mediaCache.getText(score, mediaCache.getFont(80), mediaCache.getTextColor());
-	scoreTex->setPosition(mediaCache.centreX(scoreTex->w()), mediaCache.centreY(scoreTex->h()));
-
-	newHighScore = checkNewHighScore();
-}
-
-const bool Game::checkNewHighScore()
-{
-	std::ifstream myfile("files/high scores.txt");
-
-	if (!myfile)
-	{
-		throw("Could not open high scores");
-	}
-
-	std::copy(std::istream_iterator<double>(myfile),
-				std::istream_iterator<double>(),
-				std::back_inserter(highScores));
-
-	myfile.close();
-
-	double score = std::stod(getClockTime());
-	bool checkHighScore = false;
-
-	if (score > highScores[difficulty - 1])
-	{
-		highScores[difficulty - 1] = score;
-		checkHighScore = true;
-
-		std::ofstream ofs("files/high scores.txt");
-
-		if (!ofs)
-		{
-			throw("Could not open high scores");
-		}
-
-		for (auto& hiScore : highScores)
-		{
-			ofs << hiScore << std::endl;
-		}
-
-		ofs.close();
-	}
-
-	return checkHighScore;
-}
-
 void Game::render()
 {
 	mediaCache.drawRectangle(player.getBox(), player.getColor());
 
-	for (auto& enemy : enemies)
+	for (auto &enemy : enemies)
 	{
 		if (enemy->isAlive())
 		{
@@ -289,4 +128,173 @@ void Game::render()
 void Game::exit(Engine*)
 {
 
+}
+
+// ===============
+// Class functions
+// ===============
+
+const std::string Game::getClockTime()
+{
+	std::stringstream ss;
+	ss << std::fixed << std::setprecision(3) << timer.getSeconds();
+	return ss.str();
+}
+
+void Game::setDifficulty()
+{
+	switch (difficulty)
+	{
+	case 1: maxEnemySpeed = 250;
+		minEnemySpeed = 50;
+		minEnemyDim = 10;
+		maxEnemyDim = 50;
+		break;
+	case 2:
+	default: maxEnemySpeed = 300;
+		minEnemySpeed = 50;
+		minEnemyDim = 10;
+		maxEnemyDim = 60;
+		break;
+	case 3: maxEnemySpeed = 400;
+		minEnemySpeed = 100;
+		minEnemyDim = 20;
+		maxEnemyDim = 80;
+		break;
+	}
+}
+
+void Game::createEnemy(Engine* e)
+{
+	unsigned int dimension = e->getRandom(minEnemyDim, maxEnemyDim);
+	unsigned int x = e->getRandom(0, mediaCache.scrWidth() - dimension);
+	unsigned int speed = e->getRandom(minEnemySpeed, maxEnemySpeed);
+
+	enemies.push_back(std::make_unique<Enemy>(x, speed, dimension));
+}
+
+void Game::keyPressed(SDL_Event &event, Engine*)
+{
+	if (event.type == SDL_KEYDOWN)
+	{
+		switch (event.key.keysym.sym)
+		{
+		case SDLK_SPACE:
+		{
+			paused = !paused;
+			if (timer.isPaused())
+			{
+				timer.unpause();
+			}
+			else
+			{
+				timer.pause();
+			}
+		}
+		break;
+		case SDLK_RIGHT:
+			player.setDirection({ 1, 0 });
+			break;
+
+		case SDLK_LEFT:
+			player.setDirection({ -1, 0 });
+			break;
+
+		case SDLK_UP:
+			player.setDirection({ 0, -1 });
+			break;
+
+		case SDLK_DOWN:
+			player.setDirection({ 0, 1 });
+			break;
+
+		default: break;
+		}
+	}
+	else if (event.type == SDL_KEYUP)
+	{
+		switch (event.key.keysym.sym)
+		{
+		case SDLK_LEFT:
+		case SDLK_RIGHT:
+			player.setDirectionX(0);
+			break;
+
+		case SDLK_UP:
+		case SDLK_DOWN:
+			player.setDirectionY(0);
+			break;
+
+		default: break;
+		}
+	}
+}
+
+void Game::mouseClicked(SDL_Event&, Engine* engine)
+{
+	int x, y;
+	if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
+	{
+		if (CollisionEngine::checkCollision(restartTex->rect(), x, y))
+		{
+			if (!player.isAlive())
+			{
+				engine->changeState(std::make_shared<Difficulty>(mediaCache));
+			}
+		}
+	}
+}
+
+void Game::gameOver()
+{
+	gameOverTex = mediaCache.getText("Game Over", mediaCache.getFont(80), mediaCache.getTextColor());
+	gameOverTex->setPosition(mediaCache.centreX(gameOverTex->w()), mediaCache.centreY(gameOverTex->h()) - gameOverTex->h());
+
+	std::string score = "Score: " + getClockTime();
+
+	scoreTex = mediaCache.getText(score, mediaCache.getFont(80), mediaCache.getTextColor());
+	scoreTex->setPosition(mediaCache.centreX(scoreTex->w()), mediaCache.centreY(scoreTex->h()));
+
+	newHighScore = checkNewHighScore();
+}
+
+const bool Game::checkNewHighScore()
+{
+	std::ifstream myfile("files/high scores.txt");
+
+	if (!myfile)
+	{
+		throw("Could not open high scores");
+	}
+
+	std::copy(std::istream_iterator<double>(myfile),
+		std::istream_iterator<double>(),
+		std::back_inserter(highScores));
+
+	myfile.close();
+
+	double score = std::stod(getClockTime());
+	bool checkHighScore = false;
+
+	if (score > highScores[difficulty - 1])
+	{
+		highScores[difficulty - 1] = score;
+		checkHighScore = true;
+
+		std::ofstream ofs("files/high scores.txt");
+
+		if (!ofs)
+		{
+			throw("Could not open high scores");
+		}
+
+		for (auto &hiScore : highScores)
+		{
+			ofs << hiScore << std::endl;
+		}
+
+		ofs.close();
+	}
+
+	return checkHighScore;
 }

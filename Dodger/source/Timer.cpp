@@ -1,8 +1,10 @@
 #include "Timer.h"
 #include "SDL.h"
 
-Timer::Timer() : startTicks(0), pausedTicks(0),
-					paused(false), started(false)
+Timer::Timer() : startTicks(0), 
+				pausedTicks(0),
+				paused(false), 
+				started(false)
 {
 
 }

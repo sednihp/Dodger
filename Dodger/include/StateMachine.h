@@ -13,7 +13,7 @@ class StateMachine
 
 	public:
 		StateMachine(Engine* engine);
-		virtual ~StateMachine();
+		~StateMachine();
 
 		void setCurrentState(std::shared_ptr<State> s) { mCurrentState = std::shared_ptr<State>(s); }
 

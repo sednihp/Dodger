@@ -19,7 +19,7 @@ class MediaCache
 		FontCache fontCache;
 		TextCache txtCache;
 
-		MediaCache& operator=(const MediaCache&);
+		MediaCache &operator=(const MediaCache&);
 		MediaCache(const MediaCache&);
 
 	public:

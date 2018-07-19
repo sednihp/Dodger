@@ -25,7 +25,7 @@ class Game : public State
 		std::vector<double> highScores;
 		bool newHighScore, paused;
 		
-		void keyPressed(SDL_Event& e, Engine* engine);
+		void keyPressed(SDL_Event &e, Engine* engine);
 		void mouseClicked(SDL_Event&, Engine* engine);
 		void createEnemy(Engine* e);
 		const std::string getClockTime();
@@ -34,14 +34,14 @@ class Game : public State
 		const bool checkNewHighScore();
 
 	public:
-		Game(MediaCache& mc, int difficulty);
+		Game(MediaCache &mc, int difficulty);
 		~Game();
 
-		void enter(Engine* engine);
-		void handleEvents(SDL_Event& e, Engine* engine);
-		void update(const double dTime, Engine* engine);
-		void render();
-		void exit(Engine* engine);
+		virtual void enter(Engine* engine);
+		virtual void handleEvents(SDL_Event &e, Engine* engine);
+		virtual void update(const double dTime, Engine* engine);
+		virtual void render();
+		virtual void exit(Engine* engine);
 };
 
 #endif

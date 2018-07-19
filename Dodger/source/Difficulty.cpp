@@ -7,7 +7,7 @@
 #include <iostream>
 #include <fstream>
 
-Difficulty::Difficulty(MediaCache& mc) : State(mc), 
+Difficulty::Difficulty(MediaCache &mc) : State(mc), 
 								font(mediaCache.getFont(200)),
 								menuFont(mediaCache.getFont(100))
 {
@@ -34,7 +34,7 @@ void Difficulty::enter(Engine*)
 {
 }
 
-void Difficulty::handleEvents(SDL_Event& e, Engine* engine)
+void Difficulty::handleEvents(SDL_Event &e, Engine* engine)
 {
 	if(e.type == SDL_MOUSEBUTTONDOWN)
 	{
@@ -74,7 +74,7 @@ void Difficulty::render()
 {
 	mediaCache.renderTexture(title, title->x(), title->y());
 
-	for(auto& item : menu)
+	for(auto &item : menu)
 	{
 		mediaCache.renderTexture(item, item->x(), item->y());
 	}

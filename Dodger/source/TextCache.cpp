@@ -2,7 +2,7 @@
 #include <iostream>
 #include "Util.h"
 
-TextCache::TextCache(SDL_Renderer*& renderer) : ren(renderer)
+TextCache::TextCache(SDL_Renderer* &renderer) : ren(renderer)
 {
 	if (TTF_Init() == -1)
 	{
@@ -33,8 +33,11 @@ std::shared_ptr<GameTexture> TextCache::getText(std::string message, TTF_Font* f
 	if(i == words.end())
 	{
 		SDL_Surface* surf = TTF_RenderText_Blended(font, message.c_str(), color);
+		if (!surf)
+			throw TTF_GetError();
 		SDL_Texture* texture = SDL_CreateTextureFromSurface(ren, surf);
-		if(!texture) throw TTF_GetError();
+		if(!texture) 
+			throw TTF_GetError();
 		SDL_FreeSurface(surf);
 		auto gt = std::make_shared<GameTexture>(texture);
 

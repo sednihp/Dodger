@@ -1,7 +1,7 @@
 #include "FontCache.h"
 #include "Util.h"
 
-FontCache::FontCache(SDL_Renderer*& renderer) : ren(renderer)
+FontCache::FontCache(SDL_Renderer* &renderer) : ren(renderer)
 {
 }
 
@@ -14,9 +14,10 @@ FontCache::~FontCache()
 
 void FontCache::flush()
 {
-	for(auto& f : fonts)
+	for(auto &f : fonts)
 	{
 		TTF_CloseFont(f.second);
+		f.second = nullptr;
 	}
 	fonts.clear();
 }
@@ -30,7 +31,8 @@ TTF_Font* FontCache::getFont(int size)
     if(i == fonts.end())
     {
 		TTF_Font* font = TTF_OpenFont("files/DS-DIGI.ttf", size);
-		if(!font) throw TTF_GetError();
+		if(!font)
+			throw TTF_GetError();
 		i = fonts.insert(i, std::make_pair(size, font));
 }
 

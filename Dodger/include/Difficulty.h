@@ -13,20 +13,20 @@ class Difficulty : public State
 		std::shared_ptr<GameTexture> title;
 		std::vector<std::shared_ptr<GameTexture>> menu;
 
-		void mouseClicked(SDL_Event& e, Engine* engine);
+		void mouseClicked(SDL_Event &e, Engine* engine);
 
-		Difficulty& operator=(const Difficulty&);
+		Difficulty &operator=(const Difficulty&);
 		Difficulty(const Difficulty&);
 
 	public:
-		Difficulty(MediaCache& mc);
+		Difficulty(MediaCache &mc);
 		~Difficulty();
 
-		void enter(Engine* engine);
-		void handleEvents(SDL_Event& e, Engine* engine);
-		void update(const double dTime, Engine* engine);
-		void render();
-		void exit(Engine* engine);
+		virtual void enter(Engine* engine);
+		virtual void handleEvents(SDL_Event &e, Engine* engine);
+		virtual void update(const double dTime, Engine* engine);
+		virtual void render();
+		virtual void exit(Engine* engine);
 };
 
 #endif

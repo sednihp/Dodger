@@ -9,14 +9,14 @@
 class ImageCache
 {
 	private:
-		SDL_Renderer*& ren;
+		SDL_Renderer* &ren;
 		std::map<std::string, std::shared_ptr<GameTexture>> images;
 
-		ImageCache& operator=(const ImageCache&);
+		ImageCache &operator=(const ImageCache&);
 		ImageCache(const ImageCache&);
 
 	public:
-		ImageCache(SDL_Renderer*& renderer);
+		ImageCache(SDL_Renderer* &renderer);
 		~ImageCache();
 
 		void flush();

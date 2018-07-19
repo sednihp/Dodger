@@ -1,8 +1,8 @@
 #include "Util.h"
 
-//========
-//POINT2D
-//========
+// =======
+// POINT2D
+// =======
 Point2D::Point2D() : x(0), y(0)
 {
 
@@ -20,9 +20,9 @@ void Point2D::set(double newX, double newY)
 }
 
 
-//=========
-//VECTOR2D
-//=========
+// ========
+// VECTOR2D
+// ========
 Vector2D::Vector2D() : x(0), y(0)
 {
 

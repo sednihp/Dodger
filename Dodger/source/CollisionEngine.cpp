@@ -4,7 +4,7 @@ namespace CollisionEngine
 {
     //if the firstBox is outside the secondBox there is no collision
     //otherwise they have collided
-    const bool checkCollision(const SDL_Rect& firstBox, const SDL_Rect& secondBox)
+    const bool checkCollision(const SDL_Rect &firstBox, const SDL_Rect &secondBox)
     {
         if(firstBox.y >= secondBox.y + secondBox.h)
             return false;
@@ -22,7 +22,7 @@ namespace CollisionEngine
     }
 
 	//if x or y is outside the box return false, else return true
-	const bool checkCollision(const SDL_Rect& mBox, const int x, const int y)
+	const bool checkCollision(const SDL_Rect &mBox, const int x, const int y)
     {
         if(x < mBox.x)
         {

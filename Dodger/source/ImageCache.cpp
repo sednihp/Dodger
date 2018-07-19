@@ -3,9 +3,9 @@
 #include <iostream>
 #include "Util.h"
 
-ImageCache::ImageCache(SDL_Renderer*& renderer) : ren(renderer)
+ImageCache::ImageCache(SDL_Renderer* &renderer) : ren(renderer)
 {
-	if(SDL_Init(SDL_INIT_VIDEO) == -1)
+	if(SDL_InitSubSystem(SDL_INIT_VIDEO) != 0)
 	{
 		std::cerr << SDL_GetError() << std::endl;
 		exit(1);
@@ -31,7 +31,8 @@ std::shared_ptr<GameTexture> ImageCache::getImage(std::string file)
     if(i == images.end())
     {
 		SDL_Texture* tex = IMG_LoadTexture(ren, file.c_str());
-		if(!tex) throw IMG_GetError();
+		if(!tex)
+			throw IMG_GetError();
 		auto gt = std::make_shared<GameTexture>(tex);
 		i = images.insert(i, std::make_pair(file, gt));
     }

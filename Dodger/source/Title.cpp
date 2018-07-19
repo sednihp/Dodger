@@ -5,7 +5,7 @@
 #include "CollisionEngine.h"
 #include "Difficulty.h"
 
-Title::Title(MediaCache& mc) : State(mc), 
+Title::Title(MediaCache &mc) : State(mc), 
 								font(mediaCache.getFont(200)),
 								menuFont(mediaCache.getFont(100))
 {
@@ -27,35 +27,19 @@ Title::~Title()
 {
 }
 
+// ===============
+// State functions
+// ===============
+
 void Title::enter(Engine*)
 {
 }
 
-void Title::handleEvents(SDL_Event& e, Engine* engine)
+void Title::handleEvents(SDL_Event &e, Engine* engine)
 {
 	if(e.type == SDL_MOUSEBUTTONDOWN)
 	{
 		mouseClicked(e, engine);
-	}
-}
-
-void Title::mouseClicked(SDL_Event&, Engine* engine)
-{
-	int x, y;
-    if(SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
-    {
-		if(CollisionEngine::checkCollision(menu[0]->rect(), x, y))
-		{
-			engine->changeState(std::make_shared<Difficulty>(mediaCache));
-		}
-		else if(CollisionEngine::checkCollision(menu[1]->rect(), x, y))
-		{
-			engine->changeState(std::make_shared<HighScore>(mediaCache));
-		}
-		else if(CollisionEngine::checkCollision(menu[2]->rect(), x, y))
-		{
-			engine->stopRunning();
-		}
 	}
 }
 
@@ -67,7 +51,7 @@ void Title::render()
 {
 	mediaCache.renderTexture(title, title->x(), title->y());
 
-	for(auto& item : menu)
+	for(auto &item : menu)
 	{
 		mediaCache.renderTexture(item, item->x(), item->y());
 	}
@@ -76,4 +60,28 @@ void Title::render()
 void Title::exit(Engine* )
 {
 
+}
+
+// ===============
+// Class functions
+// ===============
+
+void Title::mouseClicked(SDL_Event&, Engine* engine)
+{
+	int x, y;
+	if (SDL_GetMouseState(&x, &y)&SDL_BUTTON(1))
+	{
+		if (CollisionEngine::checkCollision(menu[0]->rect(), x, y))
+		{
+			engine->changeState(std::make_shared<Difficulty>(mediaCache));
+		}
+		else if (CollisionEngine::checkCollision(menu[1]->rect(), x, y))
+		{
+			engine->changeState(std::make_shared<HighScore>(mediaCache));
+		}
+		else if (CollisionEngine::checkCollision(menu[2]->rect(), x, y))
+		{
+			engine->stopRunning();
+		}
+	}
 }
