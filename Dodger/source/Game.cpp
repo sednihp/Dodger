@@ -179,36 +179,36 @@ void Game::keyPressed(SDL_Event &event, Engine*)
 	{
 		switch (event.key.keysym.sym)
 		{
-		case SDLK_SPACE:
-		{
-			paused = !paused;
-			if (timer.isPaused())
+			case SDLK_SPACE:
 			{
-				timer.unpause();
+				paused = !paused;
+				if (timer.isPaused())
+				{
+					timer.unpause();
+				}
+				else
+				{
+					timer.pause();
+				}
 			}
-			else
-			{
-				timer.pause();
-			}
-		}
-		break;
-		case SDLK_RIGHT:
-			player.setDirection({ 1, 0 });
 			break;
+			case SDLK_RIGHT:
+				player.setDirection({ 1, 0 });
+				break;
 
-		case SDLK_LEFT:
-			player.setDirection({ -1, 0 });
-			break;
+			case SDLK_LEFT:
+				player.setDirection({ -1, 0 });
+				break;
 
-		case SDLK_UP:
-			player.setDirection({ 0, -1 });
-			break;
+			case SDLK_UP:
+				player.setDirection({ 0, -1 });
+				break;
 
-		case SDLK_DOWN:
-			player.setDirection({ 0, 1 });
-			break;
+			case SDLK_DOWN:
+				player.setDirection({ 0, 1 });
+				break;
 
-		default: break;
+			default: break;
 		}
 	}
 	else if (event.type == SDL_KEYUP)
