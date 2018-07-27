@@ -34,10 +34,6 @@ Game::~Game()
 {
 }
 
-// ===============
-// State functions
-// ===============
-
 void Game::enter(Engine* e)
 {
 	for (int i = 0; i < startEnemyCount; ++i) 
